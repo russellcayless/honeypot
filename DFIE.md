@@ -22,7 +22,7 @@ One-line justification: the host is being actively, continuously brute-forced ag
 
 ---
 
-deltas-findings.png
+[deltas-findings.png](https://github.com/russellcayless/honeypot/blob/7ba84e83e2ae7bd5a4887007054aa6e746849413/deltas-findings.png)
 
 ---
 **5. Probable Incident Type** 
