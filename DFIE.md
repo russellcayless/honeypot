@@ -38,6 +38,9 @@ Security.txt (the intended human-readable export) was empty; all analysis here r
 
 **Recommended immediate action:** independently verify current RDP session state on the host (e.g., qwinsta/query session, or re-pull TerminalServices-LocalSessionManager operational log) to resolve whether 217.160.151.42 / 208.118.125.58 hold an authenticated session — this is more urgent than the rest of this report.
 
+---
+
+
 
 
 
