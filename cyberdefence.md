@@ -14,7 +14,7 @@ This checklist walks the full defensive lifecycle for an internet-exposed asset.
 **Phase 1 — Build the VM Honeypot (locked down while we build it)**
 
  - Deploy a Windows 11 VM in your own resource group (strong username and password) — ensure you configure a public IP address
-   --Name the VM something good, like “CORP-XXX-YYY” or something that looks legit, not “lab_test_1”
+ - Name the VM something good, like “CORP-XXX-YYY” or something that looks legit, not “lab_test_1”
  - Deny all inbound traffic from the internet
  - Onboard the VM to Microsoft Defender for Endpoint (MDE), ensure it is showing up in the DeviceInfo table
 
