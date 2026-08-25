@@ -21,8 +21,14 @@ Only one MDE investigation package was supplied
 One-line justification: the host is being actively, continuously brute-forced against RDP/SMB by at least 8 external IPs (7,145 failed logons in 6.5 hours) and still exposes MySQL (3306/33060) and RDP (3389) directly to 0.0.0.0 — but no successful external logon (4624) was recorded anywhere in the covered window, and no new persistence (accounts, autoruns, services, scheduled tasks) was found; the one open question is two **live ESTABLISHED TCP sessions on port 3389 at the moment of collection**, one from a confirmed brute-force IP, with no matching success/failure event to explain them.
 
 ---
+**3. Table of Notable Deltas / Findings** 
 
 <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/7ba84e83e2ae7bd5a4887007054aa6e746849413/deltas-findings.png" />
+
+---
+**4. Prioritized Compromise Indicators (ATT&CK-mapped)** 
+
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/80b8d525cc2a1f72fcbc465fabf5a85f5fee9158/compromise-indicators.png" />
 
 ---
 **5. Probable Incident Type** 
