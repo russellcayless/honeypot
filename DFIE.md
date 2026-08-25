@@ -21,6 +21,10 @@ Only one MDE investigation package was supplied
 One-line justification: the host is being actively, continuously brute-forced against RDP/SMB by at least 8 external IPs (7,145 failed logons in 6.5 hours) and still exposes MySQL (3306/33060) and RDP (3389) directly to 0.0.0.0 — but no successful external logon (4624) was recorded anywhere in the covered window, and no new persistence (accounts, autoruns, services, scheduled tasks) was found; the one open question is two **live ESTABLISHED TCP sessions on port 3389 at the moment of collection**, one from a confirmed brute-force IP, with no matching success/failure event to explain them.
 
 ---
+
+deltas-findings.png
+
+---
 **5. Probable Incident Type** 
 
 **Undetermined for this package in isolation** — no successful intrusion is confirmed in the covered window. In the context of the broader host history (this is the same host that suffered a MySQL "RECOVER_YOUR_DATA" extortion/ransom event via an internet-exposed root@% account on 2026-08-22), this package shows the **same class of exposure (internet-facing admin services with weak/brute-forceable auth) continuing to be actively targeted**, now against RDP/SMB rather than MySQL specifically. If the P1 live-connection question resolves to a successful, unauthorized RDP logon, this would represent a second, related intrusion attempt exploiting the same root cause (unrestricted external exposure of administrative services on S-121292839).
