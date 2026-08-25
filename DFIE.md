@@ -24,6 +24,18 @@ One-line justification: the host is being actively, continuously brute-forced ag
 **5. Probable Incident Type** 
 
 **Undetermined for this package in isolation** — no successful intrusion is confirmed in the covered window. In the context of the broader host history (this is the same host that suffered a MySQL "RECOVER_YOUR_DATA" extortion/ransom event via an internet-exposed root@% account on 2026-08-22), this package shows the **same class of exposure (internet-facing admin services with weak/brute-forceable auth) continuing to be actively targeted**, now against RDP/SMB rather than MySQL specifically. If the P1 live-connection question resolves to a successful, unauthorized RDP logon, this would represent a second, related intrusion attempt exploiting the same root cause (unrestricted external exposure of administrative services on S-121292839).
+---
+
+**6. Gaps**
+
+- No true baseline package — Step 1/2 diff methodology as specified could not be executed; all "ADDED/REMOVED/CHANGED" calls above are inferred from single-snapshot review + the log's internal time range, not a package-to-package comparison.
+- Security event log only covers 02:29–08:59 UTC on 23 Aug despite being queried for 16 Aug onward — no visibility into 16–22 Aug or the first ~2 hours of 23 Aug from this artifact.
+- No TermServices-RemoteConnectionManager / TerminalServices-LocalSessionManager operational logs, RDP session (event 21/22/25) data, or netstat history were collected — this is exactly what's needed to resolve the two live 3389 connections (P1) and was not in scope of this package.
+pfirewall.log was never enabled, so there's no historical record of allowed/blocked connections to corroborate the brute force at the network layer.
+- No DeviceNetworkEvents/NTA data (as in the prior incident) — can't confirm whether 208.118.125.58 or 217.160.151.42 sent any payload after the TCP handshake.
+Security.txt (the intended human-readable export) was empty; all analysis here required direct EVTX parsing — confirm the collection tooling is exporting .txt correctly for future packages.
+
+**Recommended immediate action:** independently verify current RDP session state on the host (e.g., qwinsta/query session, or re-pull TerminalServices-LocalSessionManager operational log) to resolve whether 217.160.151.42 / 208.118.125.58 hold an authenticated session — this is more urgent than the rest of this report.
 
 
 
