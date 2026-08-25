@@ -46,9 +46,27 @@ SHOW VARIABLES LIKE 'general_log%';
  - Restart the MySQL80 service (services.msc)
  - Run a few “SELECT” queries and then check the mysql_general.log to ensure the logs are coming through.
  - Note the MySQL log file path (needed for the DCR in Phase 3)
- - Bonus (not included in the video), create an entire backup of all databases in the server
+   
+ ---
 
+**Phase 3 — Wire logging to Log Analytics**
 
+ - Ensure your VM is ON and RUNNING, this is important
+ - Confirm device telemetry is flowing to LAW-Cyber-Range (check the DeviceInfo Table)
+ - Create a custom-text-log DCR pointing AMA at the MySQL log file → lands in a custom table: MySQLAudit_CL 
+ - It’s VERY important this is correct (Logs may take up to 30 minutes to appear)
+__________________________
+File pattern:		C:\ProgramData\MySQL\MySQL Server 8.0\Data\mysql_general.log
+Table name:		MySQLAudit_CL
+Record delimiter:	TimeStamp
+Timestamps format:	ISO 8601
+__________________________
+
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/Entra/blob/cd5c32551922714de262c72fbfa6ef7e6cd16ef3/defaultloginscreen.png" />
+
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/Entra/blob/cd5c32551922714de262c72fbfa6ef7e6cd16ef3/defaultloginscreen.png" />
+
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/Entra/blob/cd5c32551922714de262c72fbfa6ef7e6cd16ef3/defaultloginscreen.png" />
 
 
 ---
