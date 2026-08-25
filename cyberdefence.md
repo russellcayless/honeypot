@@ -27,7 +27,7 @@ This checklist walks the full defensive lifecycle for an internet-exposed asset.
 
  - On your VM, install Microsoft Visual C++ 2019 Redistributable Package (x64) (My SQL Requirement) (ref) 
  - On your VM Install MySQL (ref), Install with “Developer Default” or “Full” so it installs Workbench/the GUI
- -- Install with all defaults
+ - - Install with all defaults
  -- For the MySQL root password, on this phase, make it something strong, store it in a password manager for now (or somewhere you feel comfortable)
  -- Everything else Defaults
 Start MySQL Workbench after the installation, create a new connection, and connect to MySQL
