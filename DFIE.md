@@ -22,7 +22,7 @@ One-line justification: the host is being actively, continuously brute-forced ag
 
 ---
 
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/Entra/blob/cd5c32551922714de262c72fbfa6ef7e6cd16ef3/defaultloginscreen.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/7ba84e83e2ae7bd5a4887007054aa6e746849413/deltas-findings.png" />
 
 ---
 **5. Probable Incident Type** 
