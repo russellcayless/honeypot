@@ -12,6 +12,16 @@ Only one MDE investigation package was supplied
 - Gap: No earlier collection exists to confirm whether autoruns/services/scheduled tasks changed relative to install time (2026-08-21 19:55) or relative to the prior MySQL incident (2026-08-22, per separately reviewed data). Flagged throughout as "single-snapshot, no baseline available."
 ---
 
+**2. Summary Verdict** 
+
+Compromise indicators found: INCONCLUSIVE (host under active, sustained external attack; no confirmed successful intrusion artifact in this package, but one unresolved live connection needs immediate hands-on triage).
+
+Confidence: Medium.
+
+One-line justification: the host is being actively, continuously brute-forced against RDP/SMB by at least 8 external IPs (7,145 failed logons in 6.5 hours) and still exposes MySQL (3306/33060) and RDP (3389) directly to 0.0.0.0 — but no successful external logon (4624) was recorded anywhere in the covered window, and no new persistence (accounts, autoruns, services, scheduled tasks) was found; the one open question is two live ESTABLISHED TCP sessions on port 3389 at the moment of collection, one from a confirmed brute-force IP, with no matching success/failure event to explain them.
+
+
+
 ## ✅ Lab Objective  
 By branding your organization’s Microsoft 365 sign-in experience, users can visually confirm they are on the real company login portal:
 
