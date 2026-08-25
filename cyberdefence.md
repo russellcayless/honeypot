@@ -10,7 +10,7 @@ This checklist walks the full defensive lifecycle for an internet-exposed asset.
 **Phase 0 — Honeypot Architecture**
 
 
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/Entra/blob/cd5c32551922714de262c72fbfa6ef7e6cd16ef3/defaultloginscreen.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/9b7f87eff6af277726d9d6ad3756eccc8db338e2/cyber_arch..png" />
 
 ---
 
