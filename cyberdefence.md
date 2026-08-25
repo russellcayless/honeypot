@@ -80,4 +80,90 @@ __________________________
 
 ---
 
+**Phase 7 — Analyze the Breach**
+
+From here on out, we can’t do a normal step-by-step instruction because what ends up happening to your environment is purely dynamic and will depend on when/how it gets breached.
+
+After a day or so, assuming your VM/MySQL database is reachable, you should start getting indicators of compromise or signs of people poking around, trying to get in.
+
+Open a new google doc to take notes / keep track of queries: Helper Queries (make a copy of this)
+
+Keep Analyzing VM and MySQL authentication activity with the queries above
+
+If someone is able to log into MySQL, keep an eye on the query log to see what kind of commands they are issuing.
+
+If someone has been able to log into the virtual machine with Guest or Administrator, check the following tables:
+DeviceLogonEvents
+DeviceProcessEvents
+DeviceFileEvents
+DeviceRegistryEvents
+Or even DeviceNetworkEvents and NTANetAnalytics
+
+Let the bad actor(s) sit for AT LEAST 24 hours or until you are satisfied with the data you have collected.
+
+My VM and Database were online for at least 48 hours before the following happened and I decided to shut everything down.
+
+Analyze the logs with ChatGPT:
+MySQL Server Authentication Prompt:
+You are a god-tier cybersecurity analyst with world-class threat hunting skills.
+Please look at these logs, these are MySQL Server Authentication logs from my environment.
+Please analyze them and paint a picture for what might be going on.
+
+MySQL Server Query Prompt:
+You are a god-tier cybersecurity analyst with world-class threat hunting skills.
+Please look at these logs, these are MySQL Server Query logs from my environment.
+Please analyze them and paint a picture for what might be going on.
+
+Defender Logs Prompt:
+You are a god-tier cybersecurity analyst with world-class threat hunting skills.
+Please look at these logs, these are Microsoft Defender (MDE) logs from my environment.
+Please analyze them and paint a picture for what might be going on.
+
+When you have analyzed all of the logs and dumped your findings and note into your copy of Helper Queries and AI Analysis, you can move on to Phase 8
+
+---
+
+**Phase 8 — Contain the Breach (Isolation)**
+
+Ensure your VM is on, Isolate it in the Defender Portal, and then capture another Investigation Package for your VM via Defender (Important), we will compare this to the first one we captured.
+Capture the exact time of isolation here:  _______________________________
+Ex: “2026-06-23T23:07:01.6859785Z”
+
+---
+
+**Phase 9 — Eradication and Recovery**
+
+What this phase looks like depends on what happened in your environment and what was on the system that got compromised. Realistically for this, since both the VM and the MySQL Server got compromised, the best thing to do would be to simply destroy the VM and restore the database from backup.
+Alternatively, if you didn’t want to (or couldn’t) destroy the VM, you could harden the system, harden the database, then restore the MySQL data from backup with the following steps:
+Harden the VM’s NSG
+Turn on VM
+Remove VM from Isolation
+Run a full malware scan using Windows Defender
+Enable the Windows Firewall (wf.msc)
+Have no “administrator” account (Delete it)
+Leave the guest account Disabled (Disable it)
+Have a strong username/password for your local account
+Do not allow logon to the MySQL Server from the public internet
+Set a strong root password for the root account that logs in over the network (or delete it)
+“Restore” the data from backup (see Phase 2 — Install & populate MySQL) 
+Or if you took an actual backup, actually restore the data from backup
+
+---
+
+**Phase 10 — Reporting**
+
+We build our end-to-end incident report.
+Defender-Level Investigation
+Export the following logs specifically for the time frame from your resource exposure time until isolation
+DeviceLogonEvents
+DeviceProcessEvents
+DeviceRegistryEvents
+DeviceNetworkEvents
+DeviceFileEvents
+MySQLAudit_CL (MySQLAudit_CL_Auth.csv + MySQLAuth_CL_Query.csv)
+NTANetAnalytics (or any other tables you feel are necessary)
+Use your favorite LLM (I prefer Claude), upload the files, and use this prompt to formulate the incident report
+Machine-Level Forensic Investigation
+Use this prompt along with your captured investigation packages to see what has changed on the VM, before and after the breach.
+
 
