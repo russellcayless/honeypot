@@ -78,8 +78,6 @@ __________________________
     -**MySQLAudit_CL
      | where _ResourceId endswith "josh-mde-lab**
 
-
-
 ---
 
 
