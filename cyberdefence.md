@@ -77,7 +77,40 @@ __________________________
  - Verify core device tables are populating. Once your logs are coming through, you can move on to Phase 4. ⚠️This table contains EVERYONE’S MySQL logs, you have to filter yours to match your ResourceId. For example:
     -**MySQLAudit_CL
      | where _ResourceId endswith "josh-mde-lab**
+---
 
+**Phase 5 — Weaken & expose (deliberately, in order)**
+
+Only after detections are armed. Do these in sequence and record the exposure timestamp — it marks the start of the incident window.
+ - Via compmgmt.msc, enable (or create) the “Administrator” on your VM
+    - Ensure it’s in the Administrators group, and set a weak password such as “password” or something from RockYou.txt top 10 weakest passwords
+ - Via compmgmt.msc, enable the “Guest” account and set the password to be be blank
+    - Add the guest account to the “Users” group
+ - Allow the guest account to logon over the network: in secpol.msc → Local Policies → User Rights Assignment:
+    - Deny log on through Remote Desktop Services — remove Guest from this list (it's there by default).
+    - Allow log on through Remote Desktop Services — make sure Guest (or Remote Desktop Users) is listed.
+    - Check Deny log on locally too, and remove Guest if present.
+    - in the same console → Security Options: Set Accounts: Limit local account use of blank passwords to console logon only → Disabled (or just give Guest a real password, which is cleaner).
+ - Under settings → Remote Desktop Users, add the Guest account
+ - Run “gpupdate /force”
+
+ - Enable MySQL authentication reachable over the network; set MySQL root user to use “root” as the password as well:
+
+CREATE USER 'root'@'%' IDENTIFIED BY 'root';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
+Note: this will create a SEPARATE root account with no password which can auth over the network
+
+ - Capture an Investigation Package for your VM via Defender (Important), we will use this in our post breach analysis
+ - Disable the Windows Firewall
+ - Weaken the NSG: allow ALL traffic inbound, increases discoverability
+ - Record the exact exposure timestamp here: _______________________________
+ - Ex: "2026-06-22T05:20:31.3208455Z"
+ - (we will use this to determine how long it took for the breach to happen)
+ - Confirm all detections are enabled and armed before walking away
+ - Your VM will automatically turn off at midnight EST every night, just keep turning it back on in the morning. This is unfortunate, but it’s for cost savings and soft breach containment
+   
 ---
 
 **Phase 7 — Analyze the Breach**
