@@ -92,29 +92,30 @@ Keep Analyzing VM and MySQL authentication activity with the queries above
 
 If someone is able to log into MySQL, keep an eye on the query log to see what kind of commands they are issuing.
 
-If someone has been able to log into the virtual machine with Guest or Administrator, check the following tables:
-DeviceLogonEvents
-DeviceProcessEvents
-DeviceFileEvents
-DeviceRegistryEvents
-Or even DeviceNetworkEvents and NTANetAnalytics
+If someone has been able to log into the virtual machine with **Guest** or **Administrator**, check the following tables:
+ - DeviceLogonEvents
+ - DeviceProcessEvents
+ - DeviceFileEvents
+ - DeviceRegistryEvents
+ - Or even DeviceNetworkEvents and NTANetAnalytics
 
 Let the bad actor(s) sit for AT LEAST 24 hours or until you are satisfied with the data you have collected.
 
 My VM and Database were online for at least 48 hours before the following happened and I decided to shut everything down.
 
 Analyze the logs with ChatGPT:
-MySQL Server Authentication Prompt:
+
+**MySQL Server Authentication Prompt:**
 You are a god-tier cybersecurity analyst with world-class threat hunting skills.
 Please look at these logs, these are MySQL Server Authentication logs from my environment.
 Please analyze them and paint a picture for what might be going on.
 
-MySQL Server Query Prompt:
+**MySQL Server Query Prompt:**
 You are a god-tier cybersecurity analyst with world-class threat hunting skills.
 Please look at these logs, these are MySQL Server Query logs from my environment.
 Please analyze them and paint a picture for what might be going on.
 
-Defender Logs Prompt:
+**Defender Logs Prompt:**
 You are a god-tier cybersecurity analyst with world-class threat hunting skills.
 Please look at these logs, these are Microsoft Defender (MDE) logs from my environment.
 Please analyze them and paint a picture for what might be going on.
@@ -125,7 +126,7 @@ When you have analyzed all of the logs and dumped your findings and note into yo
 
 **Phase 8 — Contain the Breach (Isolation)**
 
-Ensure your VM is on, Isolate it in the Defender Portal, and then capture another Investigation Package for your VM via Defender (Important), we will compare this to the first one we captured.
+Ensure your VM is on, Isolate it in the Defender Portal, and then capture another Investigation Package for your VM via Defender (Important),
 Capture the exact time of isolation here:  _______________________________
 Ex: “2026-06-23T23:07:01.6859785Z”
 
