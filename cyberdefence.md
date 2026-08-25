@@ -27,9 +27,9 @@ This checklist walks the full defensive lifecycle for an internet-exposed asset.
 
  - On your VM, install Microsoft Visual C++ 2019 Redistributable Package (x64) (My SQL Requirement) (ref) 
  - On your VM Install MySQL (ref), Install with “Developer Default” or “Full” so it installs Workbench/the GUI
- - - Install with all defaults
- -- For the MySQL root password, on this phase, make it something strong, store it in a password manager for now (or somewhere you feel comfortable)
- -- Everything else Defaults
+   - Install with all defaults
+   - For the MySQL root password, on this phase, make it something strong, store it in a password manager for now (or somewhere you feel comfortable)
+   - Everything else Defaults
 Start MySQL Workbench after the installation, create a new connection, and connect to MySQL
 Create a database and ingest dummy data → Download db_info_import.sql onto your VM and import it into your instance of MySQL (open SQL script, then execute it) 
 ⚠️this will seem like MySQL Workbench has frozen, it will just take some time. If the connection drops or it fails, just enter the MySQL password if needed and try again → change users from 5000 to 1000 or less if it fails too many times
