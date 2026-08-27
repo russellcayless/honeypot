@@ -35,11 +35,12 @@ This checklist walks the full defensive lifecycle for an internet-exposed asset.
    - ⚠️this will seem like MySQL Workbench has frozen, it will just take some time. If the connection drops or it fails, just enter the MySQL password if needed and try again → change users from 5000 to 1000 or less if it fails too many times
  - On the Schemas tab, refresh it to observe the new schema (database) “lnp_corp”
  - **Enable MySQL audit / general query logging** so every connection (success and failure) and query is written to a log file. Do that by running this query:
-——————————————————————————
+   
+```sql
 SET GLOBAL general_log = 'ON';
 SET GLOBAL log_output = 'FILE';
 SHOW VARIABLES LIKE 'general_log%';
-——————————————————————————
+```
  - Download my.ini and replace this file on your VM with it:C:\ProgramData\MySQL\MySQL Server 8.0\my.ini
    - This file tells MySQL to log everything to, it also allows login over the network:
 "C:\ProgramData\MySQL\MySQL Server 8.0\Data\mysql_general.log"
