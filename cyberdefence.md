@@ -83,7 +83,80 @@ __________________________
      | where _ResourceId endswith "josh-mde-lab
    ```
    <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/fd4c8de3f3bd5fa7893ae2849ede7e9ee5dcf263/CF4.png" />
- 
+
+---
+
+**Phase 4 — Write detections (while the box is still clean)**
+
+Author these as Sentinel analytics rules, before exposure, and confirm they are quiet against the clean baseline (no real successes yet). 
+
+Rule — successful logon to the VM: DeviceLogonEvents, ActionType == "LogonSuccess", public RemoteIP
+
+Create a Sentinel Analytics Rule for successful logons to the VM - Analytics Rule.
+name: _______________________________
+For Example: Cyber-Defense-Final-corp-na01-fe123
+
+// Virtual Machine Logons
+let MyDevice = "corp-na01-fe123"; // MDE Truncates/cuts off the device name
+```
+DeviceLogonEvents
+| where DeviceName == MyDevice
+| where AccountName in~ ("administrator", "guest")
+| where ActionType == "LogonSuccess"
+| project TimeGenerated, RemoteIP, AccountName, DeviceName, ActionType, LogonType
+```
+
+Fill in Entity Mapping and Analytics Rule settings
+
+   <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/6d2ca9cab9751be199c325516f4feb5fa58454aa/CF5.png" />
+
+
+Rule — successful login to the MySQL database: MySQLAudit_CL, connect / auth-success events
+When querying MySQLAudit_CL, you’ll notice the logs come in the format of “RawData”. These need to be parsed out into columns in order to work with them effectively. You can try to figure it out, or use this query to parse them out:
+
+Create a Sentinel Analytics Rule for successful logons to the VM - Analytics Rule.
+name: _______________________________
+For Example: Cyber-Defence-Final-MySQL
+
+Rule query:
+```
+// SQL Server
+let MyDevice = "corp-na01-fe123da";
+let FailedConnections =
+MySQLAudit_CL
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName == MyDevice
+| where RawData has "Access denied"
+| extend ConnectionId = extract(@"^\S+\s+(\d+)\s+Connect", 1, RawData)
+| distinct ConnectionId;
+MySQLAudit_CL
+| where TimeGenerated > MyTimeframe
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName == MyDevice
+| where RawData has "Connect"
+| extend ConnectionId = extract(@"^\S+\s+(\d+)\s+Connect", 1, RawData)
+| extend ActionType =
+    case(
+        RawData has "Access denied", "LogonFailure",
+        ConnectionId in (FailedConnections), "Ignore",
+        "LogonSuccess"
+    )
+| where ActionType != "Ignore"
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend Username = replace_string(tostring(split(tostring(split(RawData,"@")[0]), " ")[-1]), "'", "")
+| extend IpAddress = replace_string(tostring(split(split(RawData,"@")[1], " ")[0]), "'", "")
+| where ActionType == "LogonSuccess"
+| project TimeGenerated, DeviceName, Username, IpAddress, ActionType, RawData
+| order by TimeGenerated desc
+```
+
+Fill in Entity Mapping and Analytics Rule settings
+
+   <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/6d2ca9cab9751be199c325516f4feb5fa58454aa/CF6.png" />
+
+
 ---
 
 **Phase 5 — Weaken & expose (deliberately, in order)**
