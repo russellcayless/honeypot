@@ -72,12 +72,14 @@ __________________________
 <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/Entra/blob/cd5c32551922714de262c72fbfa6ef7e6cd16ef3/defaultloginscreen.png" />
 
  - Verify ingestion: query MySQLAudit_CL and confirm test connections / queries appear
-   -**MySQLAudit_CL
+   ```**MySQLAudit_CL
       | project TimeGenerated, RawData, _ResourceId
       | where _ResourceId endswith "your-VM-Name"**
+   ```
  - Verify core device tables are populating. Once your logs are coming through, you can move on to Phase 4. ⚠️This table contains EVERYONE’S MySQL logs, you have to filter yours to match your ResourceId. For example:
-    -**MySQLAudit_CL
+    ```**MySQLAudit_CL
      | where _ResourceId endswith "josh-mde-lab**
+    ```
 ---
 
 **Phase 5 — Weaken & expose (deliberately, in order)**
