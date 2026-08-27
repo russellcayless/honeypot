@@ -195,6 +195,103 @@ Note: this will create a SEPARATE root account with no password which can auth o
    
 ---
 
+**Phase 6 — Detect the Breach**
+
+Ensure your VM remains online and wait for your analytics rules to trigger.
+Keep watching for logon activity against your VM and watching for incidents to be created in Defender/Sentinel based on your Analytics Rule. You can look through DeviceLogonEvents and MySQLAudit_CL, filtering for your device and looking at the latest logs.
+
+For example, I might use the detection/analytics rule queries as helper queries to help me monitor activity
+```
+// SQL Server
+let MyDevice = "corp-na01-fe123da";
+let MyTimeframe = todatetime("2026-06-25T00:45:27.1820312Z");
+let FailedConnections =
+MySQLAudit_CL
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName == MyDevice
+| where RawData has "Access denied"
+| extend ConnectionId = extract(@"^\S+\s+(\d+)\s+Connect", 1, RawData)
+| distinct ConnectionId;
+MySQLAudit_CL
+| where TimeGenerated > MyTimeframe
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName == MyDevice
+| where RawData has "Connect"
+| extend ConnectionId = extract(@"^\S+\s+(\d+)\s+Connect", 1, RawData)
+| extend ActionType =
+    case(
+        RawData has "Access denied", "LogonFailure",
+        ConnectionId in (FailedConnections), "Ignore",
+        "LogonSuccess"
+    )
+| where ActionType != "Ignore"
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend Username = replace_string(tostring(split(tostring(split(RawData,"@")[0]), " ")[-1]), "'", "")
+| extend IpAddress = replace_string(tostring(split(split(RawData,"@")[1], " ")[0]), "'", "")
+| project TimeGenerated, DeviceName, Username, IpAddress, ActionType, RawData
+| order by TimeGenerated desc
+```
+```
+// Filtering Queries
+let MyDevice = "corp-na01-fe123da"; // set your own device name
+let ServerVulnerableDateTime = todatetime("2026-06-25T00:45:27.1820312Z");
+MySQLAudit_CL
+| where TimeGenerated > ServerVulnerableDateTime
+| where RawData has "Query"
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName == MyDevice
+| extend ActionType = "Query"
+| extend Query = split(RawData, "Query")[1]
+| project TimeGenerated, DeviceName, ActionType, Query, RawData
+| order by TimeGenerated desc
+```
+```
+// Virtual Machine Logons
+let MyDevice = "corp-na01-fe123"; // MDE Truncates/cuts off the device name
+let ServerVulnerableDateTime = todatetime("2026-06-25T00:45:27.1820312Z");
+DeviceLogonEvents
+| where TimeGenerated > ServerVulnerableDateTime
+| where DeviceName == MyDevice
+| where AccountName in~ ("administrator", "guest")
+| project TimeGenerated, RemoteIP, AccountName, DeviceName, ActionType, LogonType
+```
+
+
+
+
+
+When a breach finally happens, continue to monitor what the attacker is doing through the other tables.
+A breach on the VM? Use: DeviceProcessEvents, DeviceFileEvents, DeviceNetworkEvents, etc, filter for your device as well as the “administrator” account.
+
+You can also observe the NTANetAnalytics table to observe any traffic to/from your VM after the breach:
+```
+let MyDevice = "josh-mde-lab";
+NTANetAnalytics
+| where isnotempty(SrcVm)
+| where SrcVm endswith MyDevice
+| where DeniedOutFlows >= 1
+| project TimeGenerated, DeviceName = MyDevice, FlowType, FlowStatus, SrcIp, SrcPorts, DestIp, DestPort
+```
+ 
+A breach on MySQL? Use: MySQLAudit_CL to filter for commands, consider the following query:
+
+```
+// Filtering Queries
+MySQLAudit_CL
+| where RawData has "Query"
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| extend ActionType = "Query"
+| extend Query = split(RawData, "Query")[1]
+| project TimeGenerated, DeviceName, ActionType, Query, RawData
+| order by TimeGenerated desc
+```
+
+---
+
 **Phase 7 — Analyze the Breach**
 
 From here on out, we can’t do a normal step-by-step instruction because what ends up happening to your environment is purely dynamic and will depend on when/how it gets breached.
