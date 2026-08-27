@@ -46,7 +46,17 @@ SHOW VARIABLES LIKE 'general_log%';
  - Restart the MySQL80 service (services.msc)
  - Run a few “SELECT” queries and then check the mysql_general.log to ensure the logs are coming through.
  - Note the MySQL log file path (needed for the DCR in Phase 3)
-   
+
+```kql
+
+DeviceFileEvents
+| where FileName startswith "tor"
+| where DeviceName == "win10rc"
+| where InitiatingProcessAccountName == "rcadmin"
+| where Timestamp >= datetime(2025-09-10T14:16:49.1372794Z)
+| order by Timestamp desc
+| project Timestamp, DeviceName, ActionType, FileName, FolderPath, SHA256, Account = InitiatingProcessAccountName
+
  ---
 
 **Phase 3 — Wire logging to Log Analytics**
