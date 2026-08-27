@@ -176,9 +176,11 @@ Only after detections are armed. Do these in sequence and record the exposure ti
 
  - Enable MySQL authentication reachable over the network; set MySQL root user to use “root” as the password as well:
 
+```
 CREATE USER 'root'@'%' IDENTIFIED BY 'root';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
+```
 
 Note: this will create a SEPARATE root account with no password which can auth over the network
 
