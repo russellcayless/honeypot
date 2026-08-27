@@ -73,14 +73,14 @@ __________________________
 
  - Verify ingestion: query MySQLAudit_CL and confirm test connections / queries appear
    ```
-   **MySQLAudit_CL
+      MySQLAudit_CL
       | project TimeGenerated, RawData, _ResourceId
-      | where _ResourceId endswith "your-VM-Name"**
+      | where _ResourceId endswith "your-VM-Name"
    ```
  - Verify core device tables are populating. Once your logs are coming through, you can move on to Phase 4. ⚠️This table contains EVERYONE’S MySQL logs, you have to filter yours to match your ResourceId. For example:
     ```
-    **MySQLAudit_CL
-     | where _ResourceId endswith "josh-mde-lab**
+     MySQLAudit_CL
+     | where _ResourceId endswith "josh-mde-lab
     ```
 ---
 
