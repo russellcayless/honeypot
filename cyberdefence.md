@@ -63,13 +63,13 @@ Record delimiter:	TimeStamp
 Timestamps format:	ISO 8601
 __________________________
 
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/Entra/blob/cd5c32551922714de262c72fbfa6ef7e6cd16ef3/defaultloginscreen.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/fd4c8de3f3bd5fa7893ae2849ede7e9ee5dcf263/CF.png" />
 
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/Entra/blob/cd5c32551922714de262c72fbfa6ef7e6cd16ef3/defaultloginscreen.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/fd4c8de3f3bd5fa7893ae2849ede7e9ee5dcf263/CF2.png" />
 
  - Immediately after successfully creating the DCR, The Azure Monitor Agent will start to be installed on your VM. Browse to your VM → Settings → Extensions + applications, and look for “AzureMonitorWindowsAgent”:
 
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/Entra/blob/cd5c32551922714de262c72fbfa6ef7e6cd16ef3/defaultloginscreen.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/fd4c8de3f3bd5fa7893ae2849ede7e9ee5dcf263/CF3.png" />
 
  - Verify ingestion: query MySQLAudit_CL and confirm test connections / queries appear
    ```
@@ -81,7 +81,9 @@ __________________________
     ```
      MySQLAudit_CL
      | where _ResourceId endswith "josh-mde-lab
-    ```
+   ```
+   <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/fd4c8de3f3bd5fa7893ae2849ede7e9ee5dcf263/CF4.png" />
+ 
 ---
 
 **Phase 5 — Weaken & expose (deliberately, in order)**
