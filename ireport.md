@@ -84,6 +84,71 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ---
 
+**9. Suggested Hunt Queries by Section**
+
+Section 3 — Impact (data read before drop):
+// MySQL audit source table — adjust name to actual ingestion table
+MySQLAudit_CL_Query
+| where TimeGenerated between (datetime(2026-08-22T14:00:00Z) .. datetime(2026-08-23T09:00:00Z))
+| where Query has_any ("SELECT", "DROP DATABASE", "information_schema.tables")
+| project TimeGenerated, DeviceName, Query
+| order by TimeGenerated asc
+
+
+Section 4 — IOC pivot (attacker IP reuse across sources):
+let attackerIPs = dynamic(["64.89.163.166","64.89.163.90","64.89.163.154","64.89.163.141","34.156.133.0","104.199.72.69","64.76.8.21","59.15.116.99"]);
+MySQLAudit_CL_Auth
+| where IpAddress in (attackerIPs)
+| union (DeviceLogonEvents | where RemoteIP in (attackerIPs))
+| union (DeviceNetworkEvents | where RemoteIP in (attackerIPs))
+| order by TimeGenerated asc
+
+
+Section 5 — Timeline reconstruction (DB drop + ransom note window):
+MySQLAudit_CL_Query
+| where TimeGenerated between (datetime(2026-08-22T14:30:00Z) .. datetime(2026-08-22T14:33:00Z))
+| project TimeGenerated, ActionType, Query
+| order by TimeGenerated asc
+
+
+Section 6 — Root cause (who created root@% and how it connected):
+MySQLAudit_CL_Query
+| where Query has "CREATE USER" or Query has "GRANT ALL PRIVILEGES"
+| project TimeGenerated, Query, RawData
+| order by TimeGenerated asc
+
+DeviceRegistryEvents
+| where DeviceName == "s-121292839"
+| where RegistryKey has_any ("mysql", "firewall", "PortForwarding")
+| order by TimeGenerated asc
+
+
+Section 6 — Windows brute force → correlation with admin success:
+DeviceLogonEvents
+| where DeviceName == "s-121292839" and AccountName == "administrator"
+| summarize FailCount = countif(ActionType == "LogonFailed"), SuccessCount = countif(ActionType == "LogonSuccess") by RemoteIP, bin(TimeGenerated, 1h)
+| order by TimeGenerated asc
+
+
+
+Section 7 — Post-incident verification (exposure closed, no repeat access):
+MySQLAudit_CL_Auth
+| where TimeGenerated > datetime(2026-08-23T09:00:00Z)
+| where Username == "root" or IpAddress !in ("<approved admin IPs>")
+| order by TimeGenerated asc
+
+
+Section 8 — Full-fidelity pull for evidence package:
+union DeviceLogonEvents, DeviceProcessEvents, DeviceFileEvents, DeviceRegistryEvents, DeviceNetworkEvents
+| where DeviceName == "s-121292839"
+| where TimeGenerated between (datetime(2026-08-22T13:00:00Z) .. datetime(2026-08-23T09:00:00Z))
+| order by TimeGenerated asc
+
+
+
+
+---
+
 **10. Lessons Learned / Recommendations (prioritized)**
 
  - 1. **[Critical]** Never expose MySQL (3306) directly to the internet; require VPN/bastion or cloud-provider private networking. This single control would have prevented the incident.
