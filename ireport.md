@@ -65,12 +65,13 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 **8. Evidence**
 
-mysqlaudit_-_Auth_Logs.csv — MySQL connection/auth events with source IP (76 rows)
-mysqlaudit_-_Queries.csv — MySQL query audit log (191 rows) — ransom note text, DROP/GRANT statements
-DeviceLogonEvents.csv — Windows interactive/network logon events (42 rows)
-DeviceProcessEvents.csv — Windows process execution (57 rows) — reviewed, no malicious activity found
-DeviceFileEvents.csv — Windows file create/delete events (1,048 rows) — reviewed, no ransom/malware artifacts found
-Not provided / requested for follow-up: DeviceNetworkEvents, DeviceRegistryEvents, NTANetAnalytics, MySQL server config/my.cnf, cloud firewall/NSG rules, backup job logs
+ - **mysqlaudit_-_Auth_Logs.csv** — MySQL connection/auth events with source IP (76 rows)
+ - **mysqlaudit_-_Queries.csv** — MySQL query audit log (191 rows) — ransom note text, DROP/GRANT statements
+ - **DeviceLogonEvents.csv** — Windows interactive/network logon events (42 rows)
+ - **DeviceProcessEvents.csv** — Windows process execution (57 rows) — reviewed, no malicious activity found
+ - **DeviceFileEvents.csv** — Windows file create/delete events (1,048 rows) — reviewed, no ransom/malware artifacts found
+ - **Not provided / requested for follow-up: DeviceNetworkEvents, DeviceRegistryEvents, NTANetAnalytics**, MySQL server config/my.cnf, cloud firewall/NSG rules, backup job logs
+   
 [Analyst: paste supporting screenshots/query result exports below each KQL block in Section 9 evidence log as they are collected.]
 
 ---
