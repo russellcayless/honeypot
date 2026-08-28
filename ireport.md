@@ -38,6 +38,8 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ⚠ Discrepancy note: The BTC address, email, URL, and DATAID provided as "known IOCs" for this case do not appear anywhere in the supplied logs. The logs contain a different but same-template ransom note. Both sets are listed below — treat the "Provided (unconfirmed in logs)" row as needing separate validation, and use the "Confirmed in logs" rows for this specific incident.
 
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/e4c9f21c84d0a68b380b4486996388e9a856a7d0/ioc_summary_table.png" />
+
 ---
 
 **6. Root Cause / Attack Vector**
