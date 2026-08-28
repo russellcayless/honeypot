@@ -2,13 +2,13 @@
 
 Report status: Draft — built from 5 exported log sources only. Sections marked Not determined from available logs need follow-up (SIEM/host EDR portal, cloud provider abuse contacts, backups team).
 
-**1. Executive Summary**
+## **1. Executive Summary**
 
 An internet-reachable MySQL instance on host **s-121292839** was accessed with full root/% privileges by multiple external IPs starting **22 Aug 2026 14:31 UTC.** The attacker(s) enumerated and read three databases (**lnp_corp, sakila, world**) — including a **credentials** table — then **dropped all three databases** and left a ransom note in a newly created **RECOVER_YOUR_DATA** database demanding 0.011 BTC. The attack recurred at least five more times through **23 Aug 05:00 UTC**, each time re-creating the ransom note, indicating the exposure was never closed during that window. Separately, the same host absorbed a 40-attempt Windows **administrator** brute force from a different IP on 22 Aug; no logs confirm that brute force succeeded. No host-level malware execution or file-encryption activity was found in the Windows telemetry provided — the confirmed impact is database-layer (drop + extortion note), not a host-based ransomware/encryptor.
 
 ---
 
-**2. Incident Details**
+## **2. Incident Details**
 
  - Detection date/time
    - **Not determined from available logs** — no alert/detection record was supplied; log export ends 23 Aug 2026 09:00:47
@@ -25,7 +25,7 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ---
 
-**3. Impact Assessment**
+## **3. Impact Assessment**
 
  - **Confidentiality:** Attacker ran **SELECT** * against **credentials, customers, payments, orders, staff,** and other tables before dropping the databases — treat as a confirmed data-read/exfiltration-risk event, not just destruction. No **DeviceNetworkEvents/NTANetAnalytics** were provided, so actual data egress to an external destination is not determined from available logs.
  - **Integrity/Availability:** **lnp_corp, sakila,** and **world** databases were dropped **(DROP DATABASE)**. A **SHUTDOWN** and **RESET MASTER / PURGE BINARY LOGS** were also issued, which **destroys binlog-based recovery/forensic data** for the instance.
@@ -34,7 +34,7 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ---
 
-**4. Indicators of Compromise**
+*## *4. Indicators of Compromise**
 
 ⚠ Discrepancy note: The BTC address, email, URL, and DATAID provided as "known IOCs" for this case do not appear anywhere in the supplied logs. The logs contain a different but same-template ransom note. Both sets are listed below — treat the "Provided (unconfirmed in logs)" row as needing separate validation, and use the "Confirmed in logs" rows for this specific incident.
 
@@ -42,13 +42,13 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ---
 
-**5. Timeline (all times as recorded in source logs)**
+## **5. Timeline (all times as recorded in source logs)**
 
 <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 
 ---
 
-**6. Root Cause / Attack Vector**
+## **6. Root Cause / Attack Vector**
 
  - **Confirmed:** MySQL was reachable with a root account that had % (any-host) grant, and that account was successfully authenticated from at least 6 external IPs with no evidence of MFA or IP allow-listing. This matches a known opportunistic "MySQL ransom bot" pattern (mass internet scan → default/weak/no-password root → drop DBs → extortion note), not a targeted intrusion.
  - **Unresolved:** Whether the **root@%** account was newly created by the attacker at 13:21:07, or was a pre-existing/legitimate account whose credential leaked, **cannot be determined from the supplied Auth Logs** — that connection has no matching auth-log entry (source IP, session owner unknown).
@@ -57,7 +57,7 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ---
 
-**7. Response Actions**
+## **7. Response Actions**
 
 **Taken (evidenced in logs):** None — no containment action (firewall change, account disable, service restart by a defender) appears in the provided data; the ransom note was re-created 5 times over 15 hours, indicating the port/account remained exposed throughout.
 
@@ -71,7 +71,7 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ---
 
-**8. Evidence**
+## **8. Evidence**
 
  - **mysqlaudit_-_Auth_Logs.csv** — MySQL connection/auth events with source IP (76 rows)
  - **mysqlaudit_-_Queries.csv** — MySQL query audit log (191 rows) — ransom note text, DROP/GRANT statements
@@ -84,7 +84,7 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ---
 
-**9. Suggested Hunt Queries by Section**
+## **9. Suggested Hunt Queries by Section**
 
 Section 3 — Impact (data read before drop):
 // MySQL audit source table — adjust name to actual ingestion table
@@ -149,7 +149,7 @@ union DeviceLogonEvents, DeviceProcessEvents, DeviceFileEvents, DeviceRegistryEv
 
 ---
 
-**10. Lessons Learned / Recommendations (prioritized)**
+## **10. Lessons Learned / Recommendations (prioritized)**
 
  - 1. **[Critical]** Never expose MySQL (3306) directly to the internet; require VPN/bastion or cloud-provider private networking. This single control would have prevented the incident.
  - 2. **[Critical]** Eliminate **'root'@'%'** and any wildcard-host grants; enforce least-privilege, host-scoped MySQL accounts, and disable remote root login entirely.
