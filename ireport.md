@@ -47,7 +47,7 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
  - Unresolved: Whether the Windows **administrator** brute force **(64.76.8.21)** and/or the successful logon from **59.15.116.99** are related to the MySQL compromise (e.g., used to reconfigure MySQL's bind address/firewall) or a coincidental, separate opportunistic attack. No process/registry evidence ties a Windows session to the MySQL config change. **Not determined from available logs — DeviceRegistryEvents and DeviceNetworkEvents** were not provided.
  - Host-level indicators (process execution, file writes) show no malware, encryptor, or persistence mechanism — consistent with an attack that never required host code execution (MySQL exposed directly to the internet).
 
---
+---
 
 **7. Response Actions**
 
