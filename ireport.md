@@ -42,6 +42,12 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ---
 
+**5. Timeline (all times as recorded in source logs)**
+
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+
+---
+
 **6. Root Cause / Attack Vector**
 
  - **Confirmed:** MySQL was reachable with a root account that had % (any-host) grant, and that account was successfully authenticated from at least 6 external IPs with no evidence of MFA or IP allow-listing. This matches a known opportunistic "MySQL ransom bot" pattern (mass internet scan → default/weak/no-password root → drop DBs → extortion note), not a targeted intrusion.
