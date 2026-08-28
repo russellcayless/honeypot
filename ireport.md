@@ -1,4 +1,5 @@
 **Incident Report — MySQL Extortion / Ransom on s-121292839**
+
 Report status: Draft — built from 5 exported log sources only. Sections marked Not determined from available logs need follow-up (SIEM/host EDR portal, cloud provider abuse contacts, backups team).
 
 **1. Executive Summary**
