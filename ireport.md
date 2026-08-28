@@ -35,7 +35,41 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 ---
 
 **4. Indicators of Compromise**
+
 ⚠ Discrepancy note: The BTC address, email, URL, and DATAID provided as "known IOCs" for this case do not appear anywhere in the supplied logs. The logs contain a different but same-template ransom note. Both sets are listed below — treat the "Provided (unconfirmed in logs)" row as needing separate validation, and use the "Confirmed in logs" rows for this specific incident.
+
+---
+
+**6. Root Cause / Attack Vector**
+
+ - **Confirmed:** MySQL was reachable with a root account that had % (any-host) grant, and that account was successfully authenticated from at least 6 external IPs with no evidence of MFA or IP allow-listing. This matches a known opportunistic "MySQL ransom bot" pattern (mass internet scan → default/weak/no-password root → drop DBs → extortion note), not a targeted intrusion.
+ - **Unresolved:** Whether the **root@%** account was newly created by the attacker at 13:21:07, or was a pre-existing/legitimate account whose credential leaked, **cannot be determined from the supplied Auth Logs** — that connection has no matching auth-log entry (source IP, session owner unknown).
+ - Unresolved: Whether the Windows **administrator** brute force **(64.76.8.21)** and/or the successful logon from **59.15.116.99** are related to the MySQL compromise (e.g., used to reconfigure MySQL's bind address/firewall) or a coincidental, separate opportunistic attack. No process/registry evidence ties a Windows session to the MySQL config change. **Not determined from available logs — DeviceRegistryEvents and DeviceNetworkEvents** were not provided.
+ - Host-level indicators (process execution, file writes) show no malware, encryptor, or persistence mechanism — consistent with an attack that never required host code execution (MySQL exposed directly to the internet).
+
+--
+
+**7. Response Actions**
+
+Taken (evidenced in logs): None — no containment action (firewall change, account disable, service restart by a defender) appears in the provided data; the ransom note was re-created 5 times over 15 hours, indicating the port/account remained exposed throughout.
+Recommended / immediate:
+Remove internet exposure of MySQL port 3306 (firewall/NSG rule to LAN/VPN only); confirm bind-address is not 0.0.0.0.
+Rotate/disable the root@% account; audit all MySQL accounts for %-host grants and WITH GRANT OPTION.
+Disable/reset the Windows administrator account or enforce account lockout + MFA; investigate the 59.15.116.99 successful logon as a priority.
+Restore lnp_corp, sakila, world from last-known-good backup; verify backup integrity (binlogs were purged by the attacker, so point-in-time recovery past 22 Aug 14:32 is likely unavailable).
+Treat data in the dropped databases (esp. credentials, customers, payments) as potentially exposed; assess breach-notification obligations.
+
+---
+
+**8. Evidence**
+
+mysqlaudit_-_Auth_Logs.csv — MySQL connection/auth events with source IP (76 rows)
+mysqlaudit_-_Queries.csv — MySQL query audit log (191 rows) — ransom note text, DROP/GRANT statements
+DeviceLogonEvents.csv — Windows interactive/network logon events (42 rows)
+DeviceProcessEvents.csv — Windows process execution (57 rows) — reviewed, no malicious activity found
+DeviceFileEvents.csv — Windows file create/delete events (1,048 rows) — reviewed, no ransom/malware artifacts found
+Not provided / requested for follow-up: DeviceNetworkEvents, DeviceRegistryEvents, NTANetAnalytics, MySQL server config/my.cnf, cloud firewall/NSG rules, backup job logs
+[Analyst: paste supporting screenshots/query result exports below each KQL block in Section 9 evidence log as they are collected.]
 
 ---
 
