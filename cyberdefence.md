@@ -7,14 +7,14 @@ This checklist walks the full defensive lifecycle for an internet-exposed asset.
 
 ---
 
-**Phase 0 — Honeypot Architecture**
+## **Phase 0 — Honeypot Architecture**
 
 
 <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/9b7f87eff6af277726d9d6ad3756eccc8db338e2/cyber_arch..png" />
 
 ---
 
-**Phase 1 — Build the VM Honeypot (locked down while we build it)**
+## **Phase 1 — Build the VM Honeypot (locked down while we build it)**
 
  - Deploy a Windows 11 VM in your own resource group (strong username and password) — ensure you configure a public IP address
  - Name the VM something good, like “CORP-XXX-YYY” or something that looks legit, not “lab_test_1”
@@ -23,7 +23,7 @@ This checklist walks the full defensive lifecycle for an internet-exposed asset.
 
 ---
 
-**Phase 2 — Install & populate MySQL**
+## **Phase 2 — Install & populate MySQL**
 
  - On your VM, install Microsoft Visual C++ 2019 Redistributable Package (x64) (My SQL Requirement) (ref) 
  - On your VM Install MySQL (ref), Install with “Developer Default” or “Full” so it installs Workbench/the GUI
@@ -50,7 +50,7 @@ SHOW VARIABLES LIKE 'general_log%';
 
 ---
 
-**Phase 3 — Wire logging to Log Analytics**
+## **Phase 3 — Wire logging to Log Analytics**
 
  - Ensure your VM is ON and RUNNING, this is important
  - Confirm device telemetry is flowing to LAW-Cyber-Range (check the DeviceInfo Table)
@@ -86,7 +86,7 @@ __________________________
 
 ---
 
-**Phase 4 — Write detections (while the box is still clean)**
+## **Phase 4 — Write detections (while the box is still clean)**
 
 Author these as Sentinel analytics rules, before exposure, and confirm they are quiet against the clean baseline (no real successes yet). 
 
@@ -159,7 +159,7 @@ Fill in Entity Mapping and Analytics Rule settings
 
 ---
 
-**Phase 5 — Weaken & expose (deliberately, in order)**
+## **Phase 5 — Weaken & expose (deliberately, in order)**
 
 Only after detections are armed. Do these in sequence and record the exposure timestamp — it marks the start of the incident window.
  - Via compmgmt.msc, enable (or create) the “Administrator” on your VM
@@ -195,7 +195,7 @@ Note: this will create a SEPARATE root account with no password which can auth o
    
 ---
 
-**Phase 6 — Detect the Breach**
+## **Phase 6 — Detect the Breach**
 
 Ensure your VM remains online and wait for your analytics rules to trigger.
 Keep watching for logon activity against your VM and watching for incidents to be created in Defender/Sentinel based on your Analytics Rule. You can look through DeviceLogonEvents and MySQLAudit_CL, filtering for your device and looking at the latest logs.
@@ -292,7 +292,7 @@ MySQLAudit_CL
 
 ---
 
-**Phase 7 — Analyze the Breach**
+## **Phase 7 — Analyze the Breach**
 
 From here on out, we can’t do a normal step-by-step instruction because what ends up happening to your environment is purely dynamic and will depend on when/how it gets breached.
 
@@ -336,7 +336,7 @@ When you have analyzed all of the logs and dumped your findings and note into yo
 
 ---
 
-**Phase 8 — Contain the Breach (Isolation)**
+## **Phase 8 — Contain the Breach (Isolation)**
 
 Ensure your VM is on, Isolate it in the Defender Portal, and then capture another Investigation Package for your VM via Defender (Important),
 Capture the exact time of isolation here:  _______________________________
@@ -344,7 +344,7 @@ Ex: “2026-06-23T23:07:01.6859785Z”
 
 ---
 
-**Phase 9 — Eradication and Recovery**
+## **Phase 9 — Eradication and Recovery**
 
 What this phase looks like depends on what happened in your environment and what was on the system that got compromised. Realistically for this, since both the VM and the MySQL Server got compromised, the best thing to do would be to simply destroy the VM and restore the database from backup.
 
@@ -364,7 +364,7 @@ Alternatively, if you didn’t want to (or couldn’t) destroy the VM, you could
 
 ---
 
-**Phase 10 — Reporting**
+## **Phase 10 — Reporting**
 
 We build our end-to-end incident report.
 **Defender-Level Investigation**
