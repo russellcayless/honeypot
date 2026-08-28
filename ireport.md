@@ -10,9 +10,10 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 **2. Incident Details**
 
-Field                           Value
- - Detection date/time             Not determined from available logs — no alert/detection record was supplied; log export ends 23 Aug 2026 09:00:47
- - Reporter                        Not determined from available logs
+ - Detection date/time
+   - Not determined from available logs — no alert/detection record was supplied; log export ends 23 Aug 2026 09:00:47
+ - Reporter
+   - Not determined from available logs
  - Classification                  Unauthorized database access / data destruction / extortion (MySQL "RECOVER_YOUR_DATA" ransom pattern). Not a confirmed file-                                      encrypting ransomware event on the host.
  - Severity                        High — confirmed data destruction (3 DBs dropped) and credential/customer data exposure risk; DB was internet-facing with root@%                                   and grant option
 Affected system(s)              s-121292839 (Windows host running MySQL)
