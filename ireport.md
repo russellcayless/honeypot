@@ -55,11 +55,11 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 **Recommended / immediate:**
 
-Remove internet exposure of MySQL port 3306 (firewall/NSG rule to LAN/VPN only); confirm **bind-address** is not **0.0.0.0.**
-Rotate/disable the **root@%** account; audit all MySQL accounts for %-host grants and **WITH GRANT OPTION.**
-Disable/reset the Windows **administrator** account or enforce account lockout + MFA; investigate the **59.15.116.99** successful logon as a priority.
-Restore **lnp_corp, sakila, world** from last-known-good backup; verify backup integrity (binlogs were purged by the attacker, so point-in-time recovery past 22 Aug 14:32 is likely unavailable).
-Treat data in the dropped databases (esp. **credentials, customers, payments**) as potentially exposed; assess breach-notification obligations.
+ - 1. Remove internet exposure of MySQL port 3306 (firewall/NSG rule to LAN/VPN only); confirm **bind-address** is not **0.0.0.0.** 
+ - 2. Rotate/disable the **root@%** account; audit all MySQL accounts for %-host grants and **WITH GRANT OPTION.**
+ - 3. Disable/reset the Windows **administrator** account or enforce account lockout + MFA; investigate the **59.15.116.99** successful logon as a priority.
+ - 4. Restore **lnp_corp, sakila, world** from last-known-good backup; verify backup integrity (binlogs were purged by the attacker, so point-in-time recovery past 22 Aug 14:32 is likely unavailable).
+ - 5. Treat data in the dropped databases (esp. **credentials, customers, payments**) as potentially exposed; assess breach-notification obligations.
 
 ---
 
