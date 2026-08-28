@@ -34,7 +34,7 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ---
 
-*## *4. Indicators of Compromise**
+## **4. Indicators of Compromise**
 
 ⚠ Discrepancy note: The BTC address, email, URL, and DATAID provided as "known IOCs" for this case do not appear anywhere in the supplied logs. The logs contain a different but same-template ransom note. Both sets are listed below — treat the "Provided (unconfirmed in logs)" row as needing separate validation, and use the "Confirmed in logs" rows for this specific incident.
 
