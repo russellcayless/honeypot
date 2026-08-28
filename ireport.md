@@ -51,13 +51,15 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 **7. Response Actions**
 
-Taken (evidenced in logs): None — no containment action (firewall change, account disable, service restart by a defender) appears in the provided data; the ransom note was re-created 5 times over 15 hours, indicating the port/account remained exposed throughout.
-Recommended / immediate:
-Remove internet exposure of MySQL port 3306 (firewall/NSG rule to LAN/VPN only); confirm bind-address is not 0.0.0.0.
-Rotate/disable the root@% account; audit all MySQL accounts for %-host grants and WITH GRANT OPTION.
-Disable/reset the Windows administrator account or enforce account lockout + MFA; investigate the 59.15.116.99 successful logon as a priority.
-Restore lnp_corp, sakila, world from last-known-good backup; verify backup integrity (binlogs were purged by the attacker, so point-in-time recovery past 22 Aug 14:32 is likely unavailable).
-Treat data in the dropped databases (esp. credentials, customers, payments) as potentially exposed; assess breach-notification obligations.
+**Taken (evidenced in logs):** None — no containment action (firewall change, account disable, service restart by a defender) appears in the provided data; the ransom note was re-created 5 times over 15 hours, indicating the port/account remained exposed throughout.
+
+**Recommended / immediate:**
+
+Remove internet exposure of MySQL port 3306 (firewall/NSG rule to LAN/VPN only); confirm **bind-address** is not **0.0.0.0.**
+Rotate/disable the **root@%** account; audit all MySQL accounts for %-host grants and **WITH GRANT OPTION.**
+Disable/reset the Windows **administrator** account or enforce account lockout + MFA; investigate the **59.15.116.99** successful logon as a priority.
+Restore **lnp_corp, sakila, world** from last-known-good backup; verify backup integrity (binlogs were purged by the attacker, so point-in-time recovery past 22 Aug 14:32 is likely unavailable).
+Treat data in the dropped databases (esp. **credentials, customers, payments**) as potentially exposed; assess breach-notification obligations.
 
 ---
 
