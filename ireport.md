@@ -28,7 +28,7 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 **3. Impact Assessment**
 
  - **Confidentiality:** Attacker ran **SELECT** * against **credentials, customers, payments, orders, staff,** and other tables before dropping the databases — treat as a confirmed data-read/exfiltration-risk event, not just destruction. No **DeviceNetworkEvents/NTANetAnalytics** were provided, so actual data egress to an external destination is not determined from available logs.
- - **Integrity/Availability:** **lnp_corp, sakila,** and **world** databases were dropped **(DROP DATABASE)**. A **SHUTDOWN** and **RESET MASTER / PURGE BINARY LOGS** were also issued, which destroys binlog-based recovery/forensic data for the instance.
+ - **Integrity/Availability:** **lnp_corp, sakila,** and **world** databases were dropped **(DROP DATABASE)**. A **SHUTDOWN** and **RESET MASTER / PURGE BINARY LOGS** were also issued, which **destroys binlog-based recovery/forensic data** for the instance.
  - **Scope:** Single host/single MySQL instance confirmed. No evidence of lateral movement to other hosts in the provided data (only one **DeviceName** appears across all sources).
  - **Business impact:** Loss of the **lnp_corp** production-looking database (customer/payment/credential tables) is the primary business risk pending confirmation of backup availability. **Not determined from available logs.**
 
