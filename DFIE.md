@@ -30,7 +30,7 @@ One-line justification: the host is being actively, continuously brute-forced ag
 <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/80b8d525cc2a1f72fcbc465fabf5a85f5fee9158/compromise-indicators.png" />
 
 ---
-##**5. Probable Incident Type** 
+## **5. Probable Incident Type** 
 
 **Undetermined for this package in isolation** — no successful intrusion is confirmed in the covered window. In the context of the broader host history (this is the same host that suffered a MySQL "RECOVER_YOUR_DATA" extortion/ransom event via an internet-exposed root@% account on 2026-08-22), this package shows the **same class of exposure (internet-facing admin services with weak/brute-forceable auth) continuing to be actively targeted**, now against RDP/SMB rather than MySQL specifically. If the P1 live-connection question resolves to a successful, unauthorized RDP logon, this would represent a second, related intrusion attempt exploiting the same root cause (unrestricted external exposure of administrative services on S-121292839).
 
