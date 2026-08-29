@@ -111,7 +111,7 @@ MySQLAudit_CL
 | project TimeGenerated, DeviceName, Action, RawData
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q1.png" />
 
 **Section 4 — Ransom note content extraction**
 ```
@@ -164,7 +164,7 @@ MySQLAudit_CL
 | project TimeGenerated, Action, RawData
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q4.png" />
 
 **Section 5 — Timeline of attacker logon window**
 ```
@@ -178,7 +178,7 @@ DeviceLogonEvents
   ActionType, RemoteIP, LogonType
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q5.png" />
 
 **Section 6 — Who created root@% and when**
 ```
@@ -192,7 +192,7 @@ MySQLAudit_CL
 | project TimeGenerated, DeviceName, RawData
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q6.png" />
 
 **Section 6 — Windows brute force analysis**
 ```
@@ -206,7 +206,7 @@ DeviceLogonEvents
     by RemoteIP, bin(TimeGenerated, 1h)
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q7.png" />
 
 **Section 6 — Unexplained successful admin logon**
 ```
@@ -219,7 +219,7 @@ DeviceLogonEvents
   RemoteIP, LogonType, InitiatingProcessFileName
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q2.png8" />
 ---
 
 **Section 7 — Post incident verification**
@@ -233,7 +233,7 @@ DeviceLogonEvents
   ActionType, RemoteIP
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q9.png" />
 
 **Section 8 — Full evidence pull from all Defender tables**
 ```
@@ -262,7 +262,7 @@ DeviceLogonEvents
   AccountName, RemoteIP
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q10.png" />
 ---
 
 ## **10. Lessons Learned / Recommendations (prioritized)**
