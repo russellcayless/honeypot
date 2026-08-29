@@ -164,7 +164,7 @@ MySQLAudit_CL
 | project TimeGenerated, Action, RawData
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q4.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/d7a547382be5b5fd4d9d2dab3e8ca76a20eca609/Q4.png" />
 
 **Section 5 — Timeline of attacker logon window**
 ```
@@ -178,7 +178,7 @@ DeviceLogonEvents
   ActionType, RemoteIP, LogonType
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q5.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/d7a547382be5b5fd4d9d2dab3e8ca76a20eca609/Q5.png" />
 
 **Section 6 — Who created root@% and when**
 ```
@@ -206,7 +206,7 @@ DeviceLogonEvents
     by RemoteIP, bin(TimeGenerated, 1h)
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q7.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/d7a547382be5b5fd4d9d2dab3e8ca76a20eca609/Q7.png" />
 
 **Section 6 — Unexplained successful admin logon**
 ```
@@ -219,7 +219,7 @@ DeviceLogonEvents
   RemoteIP, LogonType, InitiatingProcessFileName
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q2.png8" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/d7a547382be5b5fd4d9d2dab3e8ca76a20eca609/Q8.png" />
 ---
 
 **Section 7 — Post incident verification**
@@ -233,7 +233,7 @@ DeviceLogonEvents
   ActionType, RemoteIP
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q9.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/d7a547382be5b5fd4d9d2dab3e8ca76a20eca609/Q9.png" />
 
 **Section 8 — Full evidence pull from all Defender tables**
 ```
@@ -262,7 +262,7 @@ DeviceLogonEvents
   AccountName, RemoteIP
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q10.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/d7a547382be5b5fd4d9d2dab3e8ca76a20eca609/Q10.png" />
 ---
 
 ## **10. Lessons Learned / Recommendations (prioritized)**
