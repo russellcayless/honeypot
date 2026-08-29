@@ -220,36 +220,7 @@ DeviceLogonEvents
 | order by TimeGenerated asc
 ```
 <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
-
-**Section 7 — All attacker IP activity across both sources**
-```
-kql
-let attackerIPs = dynamic([
-    "64.89.163.166", "64.89.163.90",
-    "64.89.163.154", "64.89.163.141",
-    "34.156.133.0", "104.199.72.69",
-    "64.76.8.21", "59.15.116.99"
-]);
-MySQLAudit_CL
-| extend RawData = replace_string(RawData, "\t", " ")
-| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
-| where DeviceName contains "S-121292839"
-| extend IpAddress = replace_string(
-    tostring(split(split(RawData,"@")[1], " ")[0]), "'", "")
-| where IpAddress in (attackerIPs)
-| extend Source = "MySQL"
-| project TimeGenerated, Source, IpAddress, RawData
-| union (
-    DeviceLogonEvents
-    | where DeviceName contains "S-121292839"
-    | where RemoteIP in (attackerIPs)
-    | extend Source = "Windows"
-    | project TimeGenerated, Source, 
-      IpAddress = RemoteIP, RawData = ActionType
-)
-| order by TimeGenerated asc
-```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+---
 
 **Section 7 — Post incident verification**
 ```
