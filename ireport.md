@@ -111,7 +111,7 @@ MySQLAudit_CL
 | project TimeGenerated, DeviceName, Action, RawData
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q1.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/b18451f648e6ae4665b1283a8e1af2a0e06faeb3/Q1.png" />
 
 **Section 4 — Ransom note content extraction**
 ```
