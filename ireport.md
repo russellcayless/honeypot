@@ -119,13 +119,12 @@ kql
 MySQLAudit_CL
 | extend RawData = replace_string(RawData, "\t", " ")
 | extend DeviceName = tostring(split(_ResourceId, "/")[-1])
-| where DeviceName contains "S-121292839"
 | where RawData has_any ("bc1q", "onionmail", "spoo.me", 
     "RECOVER_YOUR_DATA", "BTC")
 | project TimeGenerated, DeviceName, RawData
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q2.png" />
 
 **Section 4 — IOC pivot across confirmed sources**
 ```
@@ -137,11 +136,12 @@ let attackerIPs = dynamic([
 ]);
 DeviceLogonEvents
 | where RemoteIP in (attackerIPs)
+| where DeviceName contains "S-121292839"
 | project TimeGenerated, DeviceName, AccountName, 
   ActionType, RemoteIP, LogonType
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q3.png" />
 
 **Section 5 — Timeline reconstruction of first intrusion**
 ```
