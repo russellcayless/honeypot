@@ -192,7 +192,7 @@ MySQLAudit_CL
 | project TimeGenerated, DeviceName, RawData
 | order by TimeGenerated asc
 ```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q6.png" />
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/8edd93c05df6504487d778169fdf22c0ef1ad887/Q6.png" />
 
 **Section 6 — Windows brute force analysis**
 ```
