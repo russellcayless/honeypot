@@ -86,67 +86,212 @@ An internet-reachable MySQL instance on host **s-121292839** was accessed with f
 
 ## **9. Suggested Hunt Queries by Section**
 
-Section 3 — Impact (data read before drop):
-// MySQL audit source table — adjust name to actual ingestion table
-MySQLAudit_CL_Query
-| where TimeGenerated between (datetime(2026-08-22T14:00:00Z) .. datetime(2026-08-23T09:00:00Z))
-| where Query has_any ("SELECT", "DROP DATABASE", "information_schema.tables")
-| project TimeGenerated, DeviceName, Query
+**Section 3 — Data read before drop**
+```
+kql
+MySQLAudit_CL
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName contains "S-121292839"
+| where TimeGenerated between (
+    datetime(2026-08-22T14:00:00Z) .. 
+    datetime(2026-08-23T09:00:00Z))
+| where RawData has_any ("SELECT", "DROP DATABASE", 
+    "RECOVER_YOUR_DATA", "SHUTDOWN", 
+    "PURGE BINARY LOGS", "RESET MASTER")
+| extend ConnectionId = extract(@"^\S+\s+(\d+)\s+\S+", 1, RawData)
+| extend Action = case(
+    RawData has "DROP DATABASE", "Database Dropped",
+    RawData has "SELECT", "Data Read",
+    RawData has "RECOVER_YOUR_DATA", "Ransom Note",
+    RawData has "SHUTDOWN", "Service Shutdown",
+    RawData has "PURGE BINARY LOGS", "Evidence Destroyed",
+    RawData has "RESET MASTER", "Evidence Destroyed",
+    "Other")
+| project TimeGenerated, DeviceName, Action, RawData
 | order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 
-
-Section 4 — IOC pivot (attacker IP reuse across sources):
-let attackerIPs = dynamic(["64.89.163.166","64.89.163.90","64.89.163.154","64.89.163.141","34.156.133.0","104.199.72.69","64.76.8.21","59.15.116.99"]);
-MySQLAudit_CL_Auth
-| where IpAddress in (attackerIPs)
-| union (DeviceLogonEvents | where RemoteIP in (attackerIPs))
-| union (DeviceNetworkEvents | where RemoteIP in (attackerIPs))
+**Section 4 — Ransom note content extraction**
+```
+kql
+MySQLAudit_CL
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName contains "S-121292839"
+| where RawData has_any ("bc1q", "onionmail", "spoo.me", 
+    "RECOVER_YOUR_DATA", "BTC")
+| project TimeGenerated, DeviceName, RawData
 | order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 
-
-Section 5 — Timeline reconstruction (DB drop + ransom note window):
-MySQLAudit_CL_Query
-| where TimeGenerated between (datetime(2026-08-22T14:30:00Z) .. datetime(2026-08-22T14:33:00Z))
-| project TimeGenerated, ActionType, Query
-| order by TimeGenerated asc
-
-
-Section 6 — Root cause (who created root@% and how it connected):
-MySQLAudit_CL_Query
-| where Query has "CREATE USER" or Query has "GRANT ALL PRIVILEGES"
-| project TimeGenerated, Query, RawData
-| order by TimeGenerated asc
-
-DeviceRegistryEvents
-| where DeviceName == "s-121292839"
-| where RegistryKey has_any ("mysql", "firewall", "PortForwarding")
-| order by TimeGenerated asc
-
-
-Section 6 — Windows brute force → correlation with admin success:
+**Section 4 — IOC pivot across confirmed sources**
+```
+let attackerIPs = dynamic([
+    "64.89.163.166","64.89.163.90",
+    "64.89.163.154","64.89.163.141",
+    "34.156.133.0","104.199.72.69",
+    "64.76.8.21","59.15.116.99"
+]);
 DeviceLogonEvents
-| where DeviceName == "s-121292839" and AccountName == "administrator"
-| summarize FailCount = countif(ActionType == "LogonFailed"), SuccessCount = countif(ActionType == "LogonSuccess") by RemoteIP, bin(TimeGenerated, 1h)
+| where RemoteIP in (attackerIPs)
+| project TimeGenerated, DeviceName, AccountName, 
+  ActionType, RemoteIP, LogonType
 | order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 
-
-
-Section 7 — Post-incident verification (exposure closed, no repeat access):
-MySQLAudit_CL_Auth
-| where TimeGenerated > datetime(2026-08-23T09:00:00Z)
-| where Username == "root" or IpAddress !in ("<approved admin IPs>")
+**Section 5 — Timeline reconstruction of first intrusion**
+```
+kql
+MySQLAudit_CL
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName contains "S-121292839"
+| where TimeGenerated between (
+    datetime(2026-08-22T14:30:00Z) .. 
+    datetime(2026-08-22T15:00:00Z))
+| extend Action = case(
+    RawData has "DROP DATABASE", "Database Dropped",
+    RawData has "SELECT", "Data Read",
+    RawData has "RECOVER_YOUR_DATA", "Ransom Note Created",
+    RawData has "GRANT", "Privileges Modified",
+    RawData has "SHUTDOWN", "MySQL Shutdown",
+    RawData has "Connect", "Connection",
+    "Other")
+| project TimeGenerated, Action, RawData
 | order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 
-
-Section 8 — Full-fidelity pull for evidence package:
-union DeviceLogonEvents, DeviceProcessEvents, DeviceFileEvents, DeviceRegistryEvents, DeviceNetworkEvents
+**Section 5 — Timeline of attacker logon window**
+```
+kql
+DeviceLogonEvents
 | where DeviceName == "s-121292839"
-| where TimeGenerated between (datetime(2026-08-22T13:00:00Z) .. datetime(2026-08-23T09:00:00Z))
+| where TimeGenerated between (
+    datetime(2026-08-22T14:00:00Z) .. 
+    datetime(2026-08-23T09:00:00Z))
+| project TimeGenerated, AccountName, 
+  ActionType, RemoteIP, LogonType
 | order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 
+**Section 6 — Who created root@% and when**
+```
+kql
+MySQLAudit_CL
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName contains "S-121292839"
+| where RawData has_any ("CREATE USER", "GRANT ALL PRIVILEGES", 
+    "WITH GRANT OPTION", "IDENTIFIED BY")
+| project TimeGenerated, DeviceName, RawData
+| order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 
+**Section 6 — Windows brute force analysis**
+```
+kql
+DeviceLogonEvents
+| where DeviceName == "s-121292839"
+| where AccountName == "administrator"
+| summarize 
+    FailCount = countif(ActionType == "LogonFailed"),
+    SuccessCount = countif(ActionType == "LogonSuccess")
+    by RemoteIP, bin(TimeGenerated, 1h)
+| order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 
+**Section 6 — Unexplained successful admin logon**
+```
+kql
+DeviceLogonEvents
+| where DeviceName == "s-121292839"
+| where AccountName == "administrator"
+| where ActionType == "LogonSuccess"
+| project TimeGenerated, AccountName, 
+  RemoteIP, LogonType, InitiatingProcessFileName
+| order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 
+**Section 7 — All attacker IP activity across both sources**
+```
+kql
+let attackerIPs = dynamic([
+    "64.89.163.166", "64.89.163.90",
+    "64.89.163.154", "64.89.163.141",
+    "34.156.133.0", "104.199.72.69",
+    "64.76.8.21", "59.15.116.99"
+]);
+MySQLAudit_CL
+| extend RawData = replace_string(RawData, "\t", " ")
+| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
+| where DeviceName contains "S-121292839"
+| extend IpAddress = replace_string(
+    tostring(split(split(RawData,"@")[1], " ")[0]), "'", "")
+| where IpAddress in (attackerIPs)
+| extend Source = "MySQL"
+| project TimeGenerated, Source, IpAddress, RawData
+| union (
+    DeviceLogonEvents
+    | where DeviceName contains "S-121292839"
+    | where RemoteIP in (attackerIPs)
+    | extend Source = "Windows"
+    | project TimeGenerated, Source, 
+      IpAddress = RemoteIP, RawData = ActionType
+)
+| order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+
+**Section 7 — Post incident verification**
+```
+kql
+DeviceLogonEvents
+| where DeviceName == "s-121292839"
+| where TimeGenerated > datetime(2026-08-23T09:00:00Z)
+| where AccountName == "administrator"
+| project TimeGenerated, AccountName, 
+  ActionType, RemoteIP
+| order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
+
+**Section 8 — Full evidence pull from all Defender tables**
+```
+kql
+let timeStart = datetime(2026-08-22T13:00:00Z);
+let timeEnd = datetime(2026-08-23T09:00:00Z);
+let device = "s-121292839";
+DeviceLogonEvents
+| where DeviceName == device
+| where TimeGenerated between (timeStart .. timeEnd)
+| extend TableName = "LogonEvents"
+| union (
+    DeviceProcessEvents
+    | where DeviceName == device
+    | where TimeGenerated between (timeStart .. timeEnd)
+    | extend TableName = "ProcessEvents"
+)
+| union (
+    DeviceFileEvents
+    | where DeviceName == device
+    | where TimeGenerated between (timeStart .. timeEnd)
+    | extend TableName = "FileEvents"
+)
+| project TimeGenerated, TableName, 
+  DeviceName, ActionType, FileName,
+  AccountName, RemoteIP
+| order by TimeGenerated asc
+```
+<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/92a59ea2de03bd67bba4599e4ddd79f9be14b317/incident_timeline.png" />
 ---
 
 ## **10. Lessons Learned / Recommendations (prioritized)**
