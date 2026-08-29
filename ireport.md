@@ -143,29 +143,6 @@ DeviceLogonEvents
 ```
 <img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/0ee1f38fded6cb8eff098c56eea14473379ef4ab/Q3.png" />
 
-**Section 5 — Timeline reconstruction of first intrusion**
-```
-kql
-MySQLAudit_CL
-| extend RawData = replace_string(RawData, "\t", " ")
-| extend DeviceName = tostring(split(_ResourceId, "/")[-1])
-| where DeviceName contains "S-121292839"
-| where TimeGenerated between (
-    datetime(2026-08-22T14:30:00Z) .. 
-    datetime(2026-08-22T15:00:00Z))
-| extend Action = case(
-    RawData has "DROP DATABASE", "Database Dropped",
-    RawData has "SELECT", "Data Read",
-    RawData has "RECOVER_YOUR_DATA", "Ransom Note Created",
-    RawData has "GRANT", "Privileges Modified",
-    RawData has "SHUTDOWN", "MySQL Shutdown",
-    RawData has "Connect", "Connection",
-    "Other")
-| project TimeGenerated, Action, RawData
-| order by TimeGenerated asc
-```
-<img width="1767" alt="Screen Shot 2025-05-07 at 11 26 51 PM" src="https://github.com/russellcayless/honeypot/blob/d7a547382be5b5fd4d9d2dab3e8ca76a20eca609/Q4.png" />
-
 **Section 5 — Timeline of attacker logon window**
 ```
 kql
